@@ -52,15 +52,15 @@
                                  <a href="/">Home</a>
                              </li>
                              <li>
-                                 <a href="about-us.html">about</a>
+                                 <a href="#about-wrap">about</a>
                              </li>
-                             <li>
+                             <!-- <li>
                                  <a href="tracking.html">
                                      tracking
                                  </a>
-                             </li>
+                             </li> -->
                              <li>
-                                 <a href="contact-us.html">
+                                 <a href="#contact-wrap ">
                                      contact
                                  </a>
                              </li>

@@ -195,7 +195,7 @@
                          <li>
                              <hr class="dropdown-divider" />
                          </li>
-                         <li>
+                         <!-- <li>
                              <a class="dropdown-item" href="javascript:;">
                                  <div class="d-flex align-items-center">
                                      <div class="">
@@ -204,7 +204,7 @@
                                      <div class="ms-3"><span>Profile</span></div>
                                  </div>
                              </a>
-                         </li>
+                         </li> -->
                          <li>
                              <hr class="dropdown-divider" />
                          </li>

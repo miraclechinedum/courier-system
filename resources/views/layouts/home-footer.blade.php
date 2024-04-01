@@ -1,6 +1,6 @@
  <!-- Footer -->
  <footer>
-     <div class="footer-main pad-120 white-clr">
+     <!-- <div class="footer-main pad-120 white-clr">
          <div class="theme-container container">
              <div class="row">
                  <div class="col-md-3 col-sm-6 footer-widget">
@@ -67,7 +67,7 @@
                  </div>
              </div>
          </div>
-     </div>
+     </div> -->
 
      <div class="footer-bottom">
          <div class="theme-container container">
@@ -75,7 +75,7 @@
                  <div class="col-md-6 col-sm-6">
                      <p>© Copyright 2016, All rights reserved</p>
                  </div>
-                 <div class="col-md-6 col-sm-6 text-right">
+                 <div class="col-md-6 col-sm-6 text-right" style="display: none;">
                      <p>
                          Design and
                          <span class="theme-clr fa fa-heart"></span>

@@ -74,7 +74,15 @@
     <!-- / Main Wrapper -->
 
     <!-- Top -->
-    <div class="to-top theme-clr-bg transition"> <i class="fa fa-angle-up"></i> </div>
+    <!-- <div class="to-top theme-clr-bg transition"> <i class="fa fa-angle-up"></i> </div> -->
+
+    <!-- Whatsapp -->
+    <div class="whatsapp-icon transition">
+        <!-- WhatsApp Icon -->
+        <a href="https://api.whatsapp.com/send?phone=+17377073339" class="whatsapp-link" target="_blank">
+            <img src="{{ asset('build/assets/images/icons/whatsapp.png') }}" alt="WhatsApp Icon" class="whatsapp-icon">
+        </a>
+    </div>
 
     <!-- Popup: Login -->
     <div class="modal fade login-popup" id="login-popup" tabindex="-1" role="dialog" aria-hidden="true">

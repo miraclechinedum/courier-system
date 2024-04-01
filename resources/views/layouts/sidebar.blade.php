@@ -34,6 +34,7 @@
             </ul>
         </li>
         <li class="menu-label">Settings</li>
+        @if(auth()->id() == 1)
         <li>
             <a class="has-arrow" href="javascript:;">
                 <div class="parent-icon">
@@ -59,6 +60,8 @@
                 </li>
             </ul>
         </li>
+        @endif
+
         <li>
             <a href="{{ route('recipients') }}">
                 <div class="parent-icon">
@@ -67,6 +70,7 @@
                 <div class="menu-title">My Recipients</div>
             </a>
         </li>
+        @if(auth()->id() == 1)
         <li>
             <a href="javascript:;">
                 <div class="parent-icon">
@@ -75,6 +79,8 @@
                 <div class="menu-title">Rate Calculator</div>
             </a>
         </li>
+        @endif
+
 
         <li class="menu-label">Mics</li>
         <li>

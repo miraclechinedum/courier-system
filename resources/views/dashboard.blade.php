@@ -24,6 +24,7 @@
     <!--end breadcrumb-->
 
     <div class="row row-cols-1 row-cols-lg-2 row-cols-xxl-4">
+        @if(auth()->id() == 1)
         <div class="col">
             <div class="card radius-10">
                 <div class="card-body">
@@ -43,19 +44,29 @@
                 </div>
             </div>
         </div>
+        @endif
+
         <div class="col">
             <div class="card radius-10">
                 <div class="card-body">
                     <div class="d-flex align-items-start gap-2">
                         <div>
+                            @if(Auth::user() && Auth::user()->id == 1)
                             <p class="mb-0 fs-6">Total Customers</p>
+                            @elseif(Auth::user() && Auth::user()->role_id == 2)
+                            <p class="mb-0 fs-6">Total Recipients</p>
+                            @endif
                         </div>
                         <div class="ms-auto widget-icon-small text-white bg-gradient-info">
                         </div>
                     </div>
                     <div class="d-flex align-items-center mt-3">
                         <div>
+                            @if(Auth::user() && Auth::user()->id == 1)
                             <h4 class="mb-0">{{ $totalCustomers }}</h4>
+                            @elseif(Auth::user() && Auth::user()->role_id == 2)
+                            <h4 class="mb-0">{{ $totalRecipients }}</h4>
+                            @endif
                         </div>
                     </div>
                 </div>
