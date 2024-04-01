@@ -27,27 +27,15 @@
 
     <!--start breadcrumb-->
     <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-        <div class="breadcrumb-title pe-3">Pages</div>
+        <div class="breadcrumb-title pe-3">Invoice</div>
         <div class="ps-3">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0 p-0 align-items-center">
                     <li class="breadcrumb-item"><a href="javascript:;"><ion-icon name="home-outline"></ion-icon></a>
                     </li>
-                    <li class="breadcrumb-item active" aria-current="page">Invoice</li>
+                    <li class="breadcrumb-item active" aria-current="page">for <b>#{{ $booking->tracking_id }}</b></li>
                 </ol>
             </nav>
-        </div>
-        <div class="ms-auto">
-            <div class="btn-group">
-                <button type="button" class="btn btn-outline-primary">Settings</button>
-                <button type="button" class="btn btn-outline-primary split-bg-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"> <span class="visually-hidden">Toggle Dropdown</span>
-                </button>
-                <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-end"> <a class="dropdown-item" href="javascript:;">Action</a>
-                    <a class="dropdown-item" href="javascript:;">Another action</a>
-                    <a class="dropdown-item" href="javascript:;">Something else here</a>
-                    <div class="dropdown-divider"></div> <a class="dropdown-item" href="javascript:;">Separated link</a>
-                </div>
-            </div>
         </div>
     </div>
     <!--end breadcrumb-->
@@ -60,8 +48,7 @@
                         <h5 class="mb-0">Company Name, Inc</h5>
                     </div>
                     <div class="col-12 col-lg-6 text-md-end">
-                        <a href="javascript:;" class="btn btn-primary me-2"><ion-icon name="file-tray-full-sharp"></ion-icon>Export as PDF</a>
-                        <a href="javascript:;" onclick="window.print()" class="btn btn-secondary"><ion-icon name="print-sharp"></ion-icon>Print</a>
+                        <a href="javascript:;" onclick="window.print()" class="btn btn-primary"><ion-icon name="print-sharp"></ion-icon>Print</a>
                     </div>
                 </div>
             </div>
@@ -71,12 +58,14 @@
                         <div class="">
                             <small>From</small>
                             <address class="m-t-5 m-b-5">
+                                @if($booking->sender)
                                 <strong class="text-inverse">{{ $booking->sender->name }}</strong><br>
                                 @if($booking->senderAddress)
                                 {{ $booking->senderAddress->address }}<br>
                                 {{ $booking->senderAddress->city->city_name }}, {{ $booking->senderAddress->state->state_name }}<br>
                                 {{ $booking->senderAddress->country->country_name }}, {{ $booking->senderAddress->zip_code }}<br>
-                                Phone: ({{ $booking->sender->phone }})<br>
+                                Phone: ({{ $booking->sender->phone_number }})<br>
+                                @endif
                                 @endif
                             </address>
                         </div>
@@ -86,22 +75,31 @@
                         <div class="">
                             <small>to</small>
                             <address class="m-t-5 m-b-5">
-                                <strong class="text-inverse">{{ $booking->recipient->name }}</strong><br>
-                                {{ $booking->recipientAddress->address }}<br>
-                                {{ $booking->recipientAddress->city->city_name }}, {{ $booking->recipientAddress->state->state_name }}<br>
-                                {{ $booking->recipientAddress->country->country_name }}, {{ $booking->recipientAddress->zip_code }}<br>
-                                Phone: {{ $booking->recipientAddress->phone }}<br>
+                                @if($booking->recipientClientAddress)
+                                @php
+                                $recipientAddress = App\Models\UserAddress::find($booking->recipientClientAddress)->first();
+                                @endphp
+                                @if($recipientAddress)
+                                <strong class="text-inverse">{{ $recipientAddress->user->name }}</strong><br>
+                                {{ $recipientAddress->address }}<br>
+                                {{ $recipientAddress->city->city_name }}, {{ $recipientAddress->state->state_name }}<br>
+                                {{ $recipientAddress->country->country_name }}, {{ $recipientAddress->zip_code }}<br>
+                                Phone: {{ $recipientAddress->user->phone_number }}<br>
+                                @endif
+                                @endif
                             </address>
                         </div>
                     </div>
 
                     <div class="col">
                         <div class="">
-                            <small>Invoice / July period</small>
-                            <div class=""><b>{{ $booking->created_at->format('F j, Y') }}</b></div>
+                            <small>Invoice for</small>
                             <div class="invoice-detail">
-                                #{{ $booking->tracking_id }}<br>
-                                Services Product
+                                <b>#{{ $booking->tracking_id }}</b><br>
+                            </div>
+                            <div class="">
+                                <b>Date:</b>
+                                {{ $booking->created_at->format('M d, Y') }}
                             </div>
                         </div>
                     </div>
@@ -112,55 +110,41 @@
                     <table class="table table-invoice">
                         <thead>
                             <tr>
-                                <th>TASK DESCRIPTION</th>
+                                <th>S/N</th>
+                                <th>PACKAGE</th>
                                 <th class="text-center" width="10%">QUANTITY</th>
                                 <th class="text-center" width="10%">WEIGHT</th>
                                 <th class="text-center" width="10%">LENGTH</th>
                                 <th class="text-center" width="10%">WIDTH</th>
                                 <th class="text-center" width="10%">HEIGHT</th>
-                                <th class="text-right" width="20%">LINE TOTAL</th>
+                                <!-- <th class="text-right" width="20%">LINE TOTAL</th> -->
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach($booking->packages as $index=> $package)
                             <tr>
+                                <td>{{ $index + 1}}</td>
                                 <td>
-                                    <span class="text-inverse">{{ $booking->package_description }}</span><br>
-                                    <small>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed id sagittis arcu.</small>
+                                    <span class="text-inverse">{{ $package->package_description }}</span><br>
                                 </td>
-                                <td class="text-center">{{ $booking->quantity }}</td>
-                                <td class="text-center">{{ number_format($booking->weight, 0, '.', ',') }}</td>
-                                <td class="text-center">{{ number_format($booking->length, 0, '.', ',') }}</td>
-                                <td class="text-center">{{ number_format($booking->width, 0, '.', ',') }}</td>
-                                <td class="text-center">{{ number_format($booking->height, 0, '.', ',') }}</td>
-                                <td class="text-right">${{ $booking->quantity * $booking->weight }}</td>
+                                <td class="text-center">{{ $package->quantity }} pieces</td>
+                                <td class="text-center">{{ number_format($package->weight, 0, '.', ',') }} kg</td>
+                                <td class="text-center">{{ number_format($package->length, 0, '.', ',') }} cm</td>
+                                <td class="text-center">{{ number_format($package->width, 0, '.', ',') }} cm</td>
+                                <td class="text-center">{{ number_format($package->height, 0, '.', ',') }} cm</td>
+                                <!-- <td class="text-right">${{ $package->quantity * $package->weight }}</td> -->
                             </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
 
-                <div class="row bg-light align-items-center m-0">
-                    <div class="col col-auto p-4">
-                        <p class="mb-0">SUBTOTAL</p>
-                        <h4 class="mb-0">$4,500.00</h4>
-                    </div>
-                    <div class="col col-auto p-4">
-                        <i class="bi bi-plus-lg text-muted"></i>
-                    </div>
-                    <div class="col col-auto me-auto p-4">
-                        <p class="mb-0">PAYPAL FEE (5.4%)</p>
-                        <h4 class="mb-0">$108.00</h4>
-                    </div>
-                    <div class="col bg-primary col-auto p-4">
-                        <p class="mb-0 text-white">TOTAL</p>
-                        <h4 class="mb-0 text-white">$4508.00</h4>
-                    </div>
-                </div><!--end row-->
-
                 <hr>
-                <!-- begin invoice-note -->
+
+                <!-- Invoice note -->
                 <div class="my-3">
-                    * Make all cheques payable to [Your Company Name]<br>
-                    * Payment is due within 30 days<br>
+                    <!-- * Make all cheques payable to [Your Company Name]<br>
+                    * Payment is due within 30 days<br> -->
                     * If you have any questions concerning this invoice, contact [Name, Phone Number, Email]
                 </div>
                 <!-- end invoice-note -->

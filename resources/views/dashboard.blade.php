@@ -15,27 +15,10 @@
                         </a>
                     </li>
                     <li class="breadcrumb-item active" aria-current="page">
-                        eCommerce
+                        overview
                     </li>
                 </ol>
             </nav>
-        </div>
-        <div class="ms-auto">
-            <div class="btn-group">
-                <button type="button" class="btn btn-outline-primary">
-                    Settings
-                </button>
-                <button type="button" class="btn btn-outline-primary split-bg-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
-                    <span class="visually-hidden">Toggle Dropdown</span>
-                </button>
-                <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-end">
-                    <a class="dropdown-item" href="javascript:;">Action</a>
-                    <a class="dropdown-item" href="javascript:;">Another action</a>
-                    <a class="dropdown-item" href="javascript:;">Something else here</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="javascript:;">Separated link</a>
-                </div>
-            </div>
         </div>
     </div>
     <!--end breadcrumb-->
@@ -56,7 +39,6 @@
                         <div>
                             <h4 class="mb-0">$92,854</h4>
                         </div>
-                        <div class="ms-auto">+6.32%</div>
                     </div>
                 </div>
             </div>
@@ -69,14 +51,12 @@
                             <p class="mb-0 fs-6">Total Customers</p>
                         </div>
                         <div class="ms-auto widget-icon-small text-white bg-gradient-info">
-                            <ion-icon name="people-outline"></ion-icon>
                         </div>
                     </div>
                     <div class="d-flex align-items-center mt-3">
                         <div>
                             <h4 class="mb-0">{{ $totalCustomers }}</h4>
                         </div>
-                        <!-- Additional content, if any -->
                     </div>
                 </div>
             </div>
@@ -90,20 +70,18 @@
                             <p class="mb-0 fs-6">Total Bookings</p>
                         </div>
                         <div class="ms-auto widget-icon-small text-white bg-gradient-danger">
-                            <ion-icon name="bag-handle-outline"></ion-icon>
                         </div>
                     </div>
                     <div class="d-flex align-items-center mt-3">
                         <div>
                             <h4 class="mb-0">{{ $totalOrders }}</h4>
                         </div>
-                        <!-- Additional content, if any -->
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col">
+        <!-- <div class="col">
             <div class="card radius-10">
                 <div class="card-body">
                     <div class="d-flex align-items-start gap-2">
@@ -111,7 +89,6 @@
                             <p class="mb-0 fs-6">Conversion Rate</p>
                         </div>
                         <div class="ms-auto widget-icon-small text-white bg-gradient-success">
-                            <ion-icon name="bar-chart-outline"></ion-icon>
                         </div>
                     </div>
                     <div class="d-flex align-items-center mt-3">
@@ -122,7 +99,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
     <!--end row-->
 
@@ -163,7 +140,11 @@
                     <tbody>
                         @foreach($bookings as $booking)
                         <tr>
-                            <td>{{ $booking->tracking_id }}</td>
+                            <td>
+                                <a href="{{ route('invoice.show', $booking->id) }}" class="text-primary">
+                                    {{ $booking->tracking_id }}
+                                </a>
+                            </td>
                             <td> {{ $booking->senderAddress->address }}<br>
                                 {{ $booking->senderAddress->city->city_name }}, {{ $booking->senderAddress->state->state_name }}<br>
                                 {{ $booking->senderAddress->country->country_name }}, {{ $booking->senderAddress->zip_code }}<br>

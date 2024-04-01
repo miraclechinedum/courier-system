@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User; // Import the User model
 
 class UserAddress extends Model
 {
@@ -20,6 +21,7 @@ class UserAddress extends Model
         'city_id',
         'zip_code',
         'address',
+        'added_by',
     ];
 
     // Define relationship with Country model
@@ -38,5 +40,12 @@ class UserAddress extends Model
     public function city()
     {
         return $this->belongsTo(City::class);
+    }
+
+    // Define relationship with User model
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

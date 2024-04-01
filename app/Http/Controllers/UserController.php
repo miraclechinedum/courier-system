@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Country;
 use App\Models\UserAddress;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -42,43 +44,61 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'User address added successfully!');
     }
 
+    public function showAddRecipientForm()
+    {
+        $countries = Country::all();
+
+        return view('add-recipient', compact('countries'));
+    }
+
     public function store(Request $request)
     {
-        // dd("second modal", $request->all());
         // Validate the incoming request
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'phone_number' => 'required|string|max:20',
-            'country_modal_user_address' => 'required|exists:countries,id',
-            'state_modal_user_address' => 'required|exists:states,id',
-            'city_modal_user_address' => 'required|exists:cities,id',
-            'postal_modal_user_address' => 'required|string|max:255',
-            'address_modal_user_address' => 'required|string|max:255',
+        $validatedData = $request->validate([
+            'recipient_name' => 'required|string|max:255',
+            'recipient_email' => 'required|email|unique:users,email',
+            'recipient_phone_number' => 'required|string|max:20|unique:users,phone_number',
+            'country_modal_recipient_address' => 'required|exists:countries,id',
+            'state_modal_recipient_address' => 'required|exists:states,id',
+            'city_modal_recipient_address' => 'required|exists:cities,id',
+            'postal_modal_recipient_address' => 'required|string|max:255',
+            'address_modal_recipient_address' => 'required|string|max:255',
         ]);
 
         // Create a new user
         $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->phone_number = $request->phone_number;
-        $user->role_id = 3; // receiptant
+        $user->name = $validatedData['recipient_name'];
+        $user->email = $validatedData['recipient_email'];
+        $user->phone_number = $validatedData['recipient_phone_number'];
+        $user->role_id = 3; // recipient
         $user->password = Hash::make('123456789');
         $user->save();
-        // dd($user);
 
         // Create a new user address
         $userAddress = new UserAddress();
         $userAddress->user_id = $user->id;
-        $userAddress->country_id = $request->country_modal_user_address;
-        $userAddress->state_id = $request->state_modal_user_address;
-        $userAddress->city_id = $request->city_modal_user_address;
-        $userAddress->zip_code = $request->postal_modal_user_address;
-        $userAddress->address = $request->address_modal_user_address;
+        $userAddress->added_by = auth()->user()->id;
+        $userAddress->country_id = $validatedData['country_modal_recipient_address'];
+        $userAddress->state_id = $validatedData['state_modal_recipient_address'];
+        $userAddress->city_id = $validatedData['city_modal_recipient_address'];
+        $userAddress->zip_code = $validatedData['postal_modal_recipient_address'];
+        $userAddress->address = $validatedData['address_modal_recipient_address'];
         $userAddress->save();
-        // dd($userAddress);
 
-        // Redirect the user after successful insertion
-        return redirect()->route('add-state')->with('success', 'User and Address added successfully!');
+        // Redirect back if no errors
+        return redirect()->route('bookings.create')->with('recipientsuccess', 'Recipient added successfully!');
+    }
+
+
+    public function showRecipients()
+    {
+        // Get the currently authenticated user's ID
+        $userId = Auth::id();
+
+        // Fetch recipients where added_by matches the current user's ID, along with their associated users
+        $recipients = UserAddress::where('added_by', $userId)->with('user')->get();
+
+        // Pass recipients data to the view
+        return view('recipients', compact('recipients'));
     }
 }

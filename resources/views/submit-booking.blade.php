@@ -139,16 +139,22 @@
                             <div class="p-4">
                                 <div class="mb-3">
                                     <h5>Recipient/Client</h5>
-                                    <select class="form-select" aria-label="Recipient select" id="sender" name="recipient_client">
+                                    <select class="form-select" aria-label="Recipient select" id="recipient" name="recipient_client">
+                                        <option value="" selected disabled>Select Recipient</option>
                                         @foreach($recipients as $recipient)
-                                        <option value="{{ $recipient->id }}" {{ old('recipient_client') == $recipient->id ? 'selected' : '' }}>{{ $recipient->name }}</option>
+                                        @if($recipient->userAddresses)
+                                        @foreach($recipient->userAddresses as $address)
+                                        <option value="{{ $address->id }}" data-address="{{ $address->address }} - {{ $address->city->city_name }}, {{ $address->state->state_name }}, {{ $address->country->country_name }} ({{ $address->zip_code }})" {{ old('recipient_client') == $address->id ? 'selected' : '' }}>
+                                            {{ $recipient->name }}
+                                        </option>
+                                        @endforeach
+                                        @endif
                                         @endforeach
                                     </select>
                                 </div>
-
-                                @if(session('success'))
+                                @if(session('recipientsuccess'))
                                 <div class="alert alert-success">
-                                    {{ session('success') }}
+                                    {{ session('recipientsuccess') }}
                                 </div>
                                 @endif
 
@@ -158,26 +164,40 @@
                                             <label>Recipient/Client Address</label>
                                             <select style="width: 100% !important; z-index: 9999;" id="recipientAddress" data-placeholder="Search Sender Address" class="select2 form-control select2-hidden-accessible" name="recipient_client_address">
                                                 <option value="" selected disabled></option>
-                                                @foreach($userAddresses as $address)
-                                                <option value="{{ $address->id }}" {{ old('recipient_client_address') == $address->id ? 'selected' : '' }}> {{ $address->address }} - {{ $address->city->city_name }},
-                                                    {{ $address->state->state_name }},
-                                                    {{ $address->country->country_name }}
-                                                    ({{ $address->zip_code }})
-                                                </option>
-                                                @endforeach
+                                                <!-- Recipient address options will be dynamically populated here -->
                                             </select>
                                         </div>
                                     </div>
 
                                     <!-- Second modal -->
-                                    <button type="button" class="btn btn-primary rounded-percent p-2 mt-4" data-bs-toggle="modal" data-bs-target="#recipientLargeModal">
+                                    <a href="{{ route('add-recipient-form') }}" class="btn btn-primary rounded-percent p-2 mt-4">
                                         <i class="fadeIn animated bx bx-plus text-white"></i>
-                                    </button>
-
+                                    </a>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            var recipientSelect = document.getElementById('recipient');
+                            var recipientAddressSelect = document.getElementById('recipientAddress');
+
+                            // Listen for changes in the recipient select input
+                            recipientSelect.addEventListener('change', function() {
+                                var selectedRecipient = recipientSelect.options[recipientSelect.selectedIndex];
+                                var recipientAddress = selectedRecipient.getAttribute('data-address');
+
+                                // Clear existing options and add the selected recipient's address as an option
+                                recipientAddressSelect.innerHTML = '';
+                                if (recipientAddress) {
+                                    var option = new Option(recipientAddress, recipientSelect.value);
+                                    recipientAddressSelect.appendChild(option);
+                                }
+                            });
+                        });
+                    </script>
+
                 </div>
 
                 <!-- Shipping Information -->
@@ -405,16 +425,16 @@
 
 
             <!-- Recipient Modal -->
-            <div class="modal fade" id="recipientLargeModal" tabindex="-1" aria-hidden="true">
+            <!-- <div class="modal fade" id="recipientLargeModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">Add Recipient</h4>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form class="form-horizontal" method="post" action="{{ route('store.address') }}" id="add_recipient_address_form" name="add_recipient_address_form">
-                                @csrf
+                    <form class="form-horizontal" method="post" action="{{ route('store-recipient') }}" id="add_recipient_address_form" name="add_recipient_address_form">
+                        @csrf
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Add Recipient</h4>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
                                 <div class="resultados_ajax_mail text-center"></div>
 
                                 <div class="row">
@@ -484,14 +504,15 @@
                                     </div>
                                 </div>
 
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Save</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
-            </div>
+            </div> -->
 
         </div>
     </div>
@@ -613,8 +634,6 @@
 
 <!-- Add jQuery library if not already included -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
         // Counter for row IDs
@@ -626,17 +645,17 @@
             var newRow = $('<div class="card-hover"><hr><div class="row justify-between justify-content-between">' +
                 '<div class="col-sm-12 col-md-6 col-lg-3"><div class="form-group">' +
                 '<label for="package_description_' + rowCount + '" class="mb-1">Package Description</label>' +
-                '<div class="input-group"><input type="text" name="package_description[]" id="package_description_' + rowCount + '" class="form-control input-sm" data-toggle="tooltip" data-placement="bottom" placeholder="Package Description" required></div></div></div>' +
+                '<input type="text" name="package_description[]" id="package_description_' + rowCount + '" class="form-control input-sm package-description" data-toggle="tooltip" data-placement="bottom" placeholder="Package Description" required></div></div></div>' +
                 '<div class="col-sm-12 col-md-6 col-lg-1"><div class="form-group"><label for="quantity_' + rowCount + '" class="mb-1">Quantity</label>' +
-                '<div class="input-group"><input type="number" name="quantity[]" id="quantity_' + rowCount + '" class="form-control input-sm" data-toggle="tooltip" data-placement="bottom" title="Quantity" required></div></div></div>' +
+                '<input type="number" name="quantity[]" id="quantity_' + rowCount + '" class="form-control input-sm quantity" data-toggle="tooltip" data-placement="bottom" title="Quantity" required></div></div></div>' +
                 '<div class="col-sm-12 col-md-6 col-lg-1"><div class="form-group"><label for="weight_' + rowCount + '" class="mb-1">Weight</label>' +
-                '<div class="input-group"><input type="number" name="weight[]" id="weight_' + rowCount + '" class="form-control input-sm" data-toggle="tooltip" data-placement="bottom" title="Weight" required></div></div></div>' +
+                '<input type="number" name="weight[]" id="weight_' + rowCount + '" class="form-control input-sm weight" data-toggle="tooltip" data-placement="bottom" title="Weight" required></div></div></div>' +
                 '<div class="col-sm-12 col-md-6 col-lg-1"><div class="form-group"><label for="length_' + rowCount + '" class="mb-1">Length</label>' +
-                '<div class="input-group"><input type="number" name="length[]" id="length_' + rowCount + '" class="form-control input-sm text_only" data-toggle="tooltip" data-placement="bottom" title="Length" required></div></div></div>' +
+                '<input type="number" name="length[]" id="length_' + rowCount + '" class="form-control input-sm text_only length" data-toggle="tooltip" data-placement="bottom" title="Length" required></div></div></div>' +
                 '<div class="col-sm-12 col-md-6 col-lg-1"><div class="form-group"><label for="width_' + rowCount + '" class="mb-1">Width</label>' +
-                '<div class="input-group"><input type="number" name="width[]" id="width_' + rowCount + '" class="form-control input-sm text_only" data-toggle="tooltip" data-placement="bottom" title="Width" required></div></div></div>' +
+                '<input type="number" name="width[]" id="width_' + rowCount + '" class="form-control input-sm text_only width" data-toggle="tooltip" data-placement="bottom" title="Width" required></div></div></div>' +
                 '<div class="col-sm-12 col-md-6 col-lg-1"><div class="form-group"><label for="height_' + rowCount + '" class="mb-1">Height</label>' +
-                '<div class="input-group"><input type="number" name="height[]" id="height_' + rowCount + '" class="form-control input-sm number_only" data-toggle="tooltip" data-placement="bottom" title="Height" required></div></div></div>' +
+                '<input type="number" name="height[]" id="height_' + rowCount + '" class="form-control input-sm number_only height" data-toggle="tooltip" data-placement="bottom" title="Height" required></div></div></div>' +
                 '<div class="col-sm-12 col-md-6 col-lg-1"><button class="btn btn-danger delete-row"><i class="fas fa-trash"></i></button></div></div><hr></div>');
 
             // Append the new row to the data_items container
@@ -651,10 +670,23 @@
             // Remove the row
             $(this).closest('.card-hover').remove();
         });
+
+        // Validation for dynamically added rows
+        $(document).on('blur', '.package-description, .quantity, .weight, .length, .width, .height', function() {
+            var isValid = true;
+            $(this).closest('.card-hover').find('.package-description, .quantity, .weight, .length, .width, .height').each(function() {
+                if ($(this).val() === '') {
+                    isValid = false;
+                }
+            });
+            if (isValid) {
+                $(this).closest('.card-hover').find('.package-description, .quantity, .weight, .length, .width, .height').removeClass('is-invalid');
+            } else {
+                $(this).closest('.card-hover').find('.package-description, .quantity, .weight, .length, .width, .height').addClass('is-invalid');
+            }
+        });
     });
 </script>
-
-
 
 <!-- End page content -->
 @endsection

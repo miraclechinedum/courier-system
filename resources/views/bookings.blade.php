@@ -54,7 +54,8 @@
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>
-                                <a href="{{ route('bookings.track', $booking->tracking_id) }}">{{ $booking->tracking_id }}</a>
+                                <!-- <a href="{{ route('bookings.track', $booking->tracking_id) }}">{{ $booking->tracking_id }}</a> -->
+                                <a href="{{ route('invoice.show', $booking->id) }}">{{ $booking->tracking_id }}</a>
                             </td>
                             <td> {{ $booking->senderAddress->address }}<br>
                                 {{ $booking->senderAddress->city->city_name }}, {{ $booking->senderAddress->state->state_name }}<br>
@@ -66,7 +67,7 @@
                             </td>
 
                             <td>{{ ucfirst($booking->status) }}</td>
-                            <td>{{ $booking->created_at->format('M d, Y') }}</td>
+                            <td>{{ $booking->created_at->format('M d, Y g:ia') }}</td>
                             <td class="text-center">
                                 <a href="{{ route('invoice.show', $booking->id) }}" style="font-size: 20px;">
                                     <i class="lni lni-eye"></i>

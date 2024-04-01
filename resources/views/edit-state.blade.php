@@ -16,7 +16,7 @@
                         </a>
                     </li>
                     <li class="breadcrumb-item active" aria-current="page">
-                        add state
+                        Edit State
                     </li>
                 </ol>
             </nav>
@@ -35,10 +35,11 @@
                 <div class="card">
                     <div class="card-body">
 
-                        <form class="form-horizontal form-material" id="save_data" name="save_data" method="post" action="{{ route('add-state') }}">
+                        <form class="form-horizontal form-material" id="save_data" name="save_data" method="post" action="{{ route('states.update', $state->id) }}">
                             @csrf
+                            @method('PUT')
                             <header class="mb-4">
-                                <span>Add State</span>
+                                <span>Edit State</span>
                             </header>
                             <section>
                                 <div class="row">
@@ -48,7 +49,7 @@
                                             <select class="select2 form-select form-control custom-select select2-hidden-accessible" id="country" name="country" tabindex="-1" aria-hidden="true">
                                                 <option value="" selected disabled>Select Country</option>
                                                 @foreach($countries as $country)
-                                                <option value="{{ $country->id }}">{{ $country->country_name }}</option>
+                                                <option value="{{ $country->id }}" {{ $state->country_id == $country->id ? 'selected' : '' }}>{{ $country->country_name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -57,7 +58,7 @@
                                     <div class="col-md-6">
                                         <label class="control-label col-form-label" for="firstName1">State Name</label>
                                         <div class="form-group">
-                                            <input type="text" class="form-control" style="width: 100%;" name="state_name" id="state_name" placeholder="State Name" disabled>
+                                            <input type="text" class="form-control" style="width: 100%;" name="state_name" id="state_name" placeholder="State Name" value="{{ $state->state_name }}">
                                         </div>
                                     </div>
                                 </div>
@@ -65,8 +66,8 @@
                             <br><br>
                             <div class="form-group">
                                 <div class="col-sm-12">
-                                    <button class="btn btn-outline-primary btn-confirmation" name="dosubmit" type="submit">Save state</button>
-                                    <a href="states_list.php" class="btn btn-outline-secondary btn-confirmation"><span><i class="ti-share-alt"></i></span> Back to list</a>
+                                    <button class="btn btn-outline-primary btn-confirmation" name="dosubmit" type="submit">Update State</button>
+                                    <a href="{{ route('states.index') }}" class="btn btn-outline-secondary btn-confirmation"><span><i class="ti-share-alt"></i></span> Back to list</a>
                                 </div>
                             </div>
                         </form>

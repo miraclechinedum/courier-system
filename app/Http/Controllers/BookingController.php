@@ -9,6 +9,7 @@ use App\Models\State;
 use App\Models\City;
 use App\Models\UserAddress;
 use App\Models\Booking;
+use App\Models\Package;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -46,17 +47,15 @@ class BookingController extends Controller
             ->where('user_id', auth()->id())
             ->get();
 
-        // Fetch recipients (users with role_id 3)
-        $recipients = User::where('role_id', 3)->get();
-
-        // Fetch addresses associated with recipients
-        $recipientAddresses = UserAddress::with(['country', 'state', 'city'])
-            ->whereIn('user_id', $recipients->pluck('id'))
+        // Fetch recipients (users with role_id 3) along with their user addresses
+        $recipients = User::where('role_id', 3)
+            ->with('userAddresses')
             ->get();
 
         // Pass the variables to the view
-        return view('submit-booking', compact('countries', 'userAddresses', 'recipients', 'recipientAddresses'));
+        return view('submit-booking', compact('countries', 'userAddresses', 'recipients'));
     }
+
 
 
     // public function store(Request $request)
@@ -128,18 +127,19 @@ class BookingController extends Controller
     public function store(Request $request)
     {
         // Validate the form data
+        // Validate the form data
         $validator = Validator::make($request->all(), [
             'service_mode' => 'required',
             'courier_company' => 'required',
             'packaging_type' => 'required',
             'payment_method' => 'required',
             'sender_customer_address' => 'required',
-            'package_description' => 'required|array',
-            'quantity' => 'required|array',
-            'weight' => 'required|array',
-            'length' => 'required|array',
-            'width' => 'required|array',
-            'height' => 'required|array',
+            'package_description' => 'required|array', // Update field name
+            'quantity' => 'required|array', // Update field name
+            'weight' => 'required|array', // Update field name
+            'length' => 'required|array', // Update field name
+            'width' => 'required|array', // Update field name
+            'height' => 'required|array', // Update field name
         ]);
 
         if ($validator->fails()) {
@@ -165,26 +165,43 @@ class BookingController extends Controller
         $booking->sender_customer_address = $request->sender_customer_address;
         $booking->recipient_client = $request->recipient_client;
         $booking->recipient_client_address = $request->recipient_client_address;
-        $booking->package_description = implode(',', $request->package_description);
-        $booking->quantity = implode(',', $request->quantity);
-        $booking->weight = implode(',', $request->weight);
-        $booking->length = implode(',', $request->length);
-        $booking->width = implode(',', $request->width);
-        $booking->height = implode(',', $request->height);
 
         // Save the booking to the database
         $booking->save();
 
+        // Save each package associated with the booking
+        // Save each package associated with the booking
+        for ($i = 0; $i < count($request->package_description); $i++) { // Update field name
+            $package = new Package();
+            $package->booking_id = $booking->id;
+            $package->package_description = $request->package_description[$i];
+            $package->quantity = $request->quantity[$i];
+            $package->weight = $request->weight[$i];
+            $package->length = $request->length[$i];
+            $package->width = $request->width[$i];
+            $package->height = $request->height[$i];
+            $package->save();
+        }
+
+
         return redirect()->route('bookings.index')->with('success', 'Booking created successfully.');
     }
 
-
-
     public function index()
     {
-        $bookings = Booking::where('user_id', auth()->id())->get();
+        // Check the user's role
+        if (auth()->user()->role_id == 2) {
+            // If the user's role is 2, filter bookings by user ID
+            $bookings = Booking::where('user_id', auth()->id())->latest()->get();
+        } else {
+            // If the user's role is not 2, display all bookings
+            $bookings = Booking::latest()->get();
+        }
+
+        // Return the view with the filtered bookings
         return view('bookings', compact('bookings'));
     }
+
 
     public function show($id)
     {

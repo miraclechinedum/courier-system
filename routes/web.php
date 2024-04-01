@@ -62,12 +62,22 @@ Route::middleware(['auth'])->group(function () {
     // Settings
     Route::get('/add-country', [SettingsController::class, 'addCountryForm'])->name('add-country');
     Route::post('/save-country', [SettingsController::class, 'saveCountry'])->name('countries.store');
-
     Route::get('/countries', [SettingsController::class, 'index'])->name('countries.index');
+
+    // Route for displaying the edit form
+    Route::get('/countries/{id}/edit', [SettingsController::class, 'editCountry'])->name('countries.edit');
+
+    // Route for updating the country
+    Route::put('/countries/{id}', [SettingsController::class, 'updateCountry'])->name('countries.update');
+    Route::post('/countries/{id}/delete', 'CountriesController@delete')->name('countries.delete');
+
     Route::get('/add-state', [SettingsController::class, 'addStateForm'])->name('state.create');
     Route::post('/store', [SettingsController::class, 'addState'])->name('add-state');
-
     Route::get('/states', [SettingsController::class, 'getStates'])->name('getmodalstates');
+
+    Route::get('/states/{id}/edit', [SettingsController::class, 'edit'])->name('states.edit');
+    Route::get('/states/{id}/update', [SettingsController::class, 'updatestate'])->name('states.update');
+
     Route::get('/cities', [SettingsController::class, 'getCities'])->name('cities');
 
     Route::get('/states', [SettingsController::class, 'showStates'])->name('states.index');
@@ -77,4 +87,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/save-city', [SettingsController::class, 'saveCity'])->name('saveCity');
     Route::get('/cities', [SettingsController::class, 'showAllCities'])->name('cities.index');
+
+    Route::get('/add-recipient', [UserController::class, 'showAddRecipientForm'])->name('add-recipient-form');
+    Route::post('/add-recipient', [UserController::class, 'store'])->name('store-recipient');
+
+    Route::get('/recipients', [UserController::class, 'showRecipients'])->name('recipients');
 });

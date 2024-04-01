@@ -68,4 +68,9 @@ class Booking extends Model
     {
         return $this->belongsTo(UserAddress::class, 'recipient_client_address');
     }
+
+    public function packages()
+    {
+        return $this->hasMany(Package::class);
+    }
 }

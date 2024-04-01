@@ -7,6 +7,7 @@ use App\Models\Country;
 use App\Models\State;
 use App\Models\City;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class SettingsController extends Controller
 {
@@ -19,11 +20,12 @@ class SettingsController extends Controller
         return view('add-country');
     }
 
+
     public function saveCountry(Request $request)
     {
         // Validate the incoming request data
         $request->validate([
-            'country_name' => 'required|string|max:255',
+            'country_name' => ['required', 'string', 'max:255', Rule::unique('countries')],
             'phone_code' => 'required|string|max:255',
             'currency' => 'required|string|max:255',
             'currency_symbol' => 'required|string|max:255',
@@ -40,13 +42,58 @@ class SettingsController extends Controller
         $country->save();
 
         // Redirect back with a success message
-        return redirect()->back()->withSuccessMessage('Country added successfully!');
+        return redirect()->route('countries.index')->withSuccessMessage('Country added successfully!');
+    }
+
+    public function editCountry($id)
+    {
+        // Find the country by ID
+        $country = Country::findOrFail($id);
+
+        // Return the edit view with the country data
+        return view('edit-country', compact('country'));
+    }
+
+    public function updateCountry(Request $request, $id)
+    {
+        // Validate the incoming request data
+        $request->validate([
+            'country_name' => ['required', 'string', 'max:255', Rule::unique('countries')->ignore($id)],
+            'phone_code' => 'required|string|max:255',
+            'currency' => 'required|string|max:255',
+            'currency_symbol' => 'required|string|max:255',
+        ]);
+
+        // Find the country by ID
+        $country = Country::findOrFail($id);
+
+        // Update the country with the validated data
+        $country->update([
+            'country_name' => $request->input('country_name'),
+            'phone_code' => $request->input('phone_code'),
+            'currency' => $request->input('currency'),
+            'currency_symbol' => $request->input('currency_symbol'),
+        ]);
+
+        // Redirect back with a success message
+        return redirect()->route('countries.index')->withSuccessMessage('Country updated successfully!');
+    }
+
+
+    public function deleteCountry($id)
+    {
+        // Find the country by ID and delete it
+        $country = Country::findOrFail($id);
+        $country->delete();
+
+        // Redirect back with a success message
+        return redirect()->back()->withSuccessMessage('Country deleted successfully!');
     }
 
     public function index()
     {
-        $countries = Country::all(); // Fetch all countries from the database
-        return view('countries', ['countries' => $countries]); // Pass countries data to the view
+        $countries = Country::latest()->get();
+        return view('countries', ['countries' => $countries]);
     }
 
     public function addStateForm()
@@ -54,23 +101,6 @@ class SettingsController extends Controller
         $countries = Country::all(); // Fetch all countries from the database
         return view('add-state', compact('countries'));
     }
-
-    // public function storeState(Request $request)
-    // {
-    //     // Validate the request
-    //     $request->validate([
-    //         'country' => 'required', // Add any other validation rules as needed
-    //         'state_name' => 'required',
-    //     ]);
-
-    //     // Create a new state instance
-    //     $state = new State();
-    //     $state->country_id = $request->country;
-    //     $state->state_name = $request->state_name;
-
-    //     // Save the state
-    //     $state->save();
-    // }
 
     // Method to handle the form submission for adding a state
     public function addState(Request $request)
@@ -88,7 +118,34 @@ class SettingsController extends Controller
         $state->save();
 
         // Redirect back to the form or to a different page
-        return redirect()->back()->with('success', 'State added successfully');
+        return redirect()->back()->withSuccessMessage('State added successfully!');
+    }
+
+    public function edit($id)
+    {
+        $state = State::findOrFail($id);
+        $countries = Country::all(); // Fetch countries for dropdown
+        return view('edit-state', compact('state', 'countries'));
+    }
+
+    public function updatestate(Request $request, $id)
+    {
+        // Validate the request data
+        $request->validate([
+            'state_name' => 'required|string|max:255',
+        ]);
+
+        // Find the state by ID
+        $state = State::findOrFail($id);
+
+        // Update the state name
+        $state->state_name = $request->input('state_name');
+
+        // Save the updated state to the database
+        $state->save();
+
+        // Redirect back to the previous page or to a different page
+        return redirect()->back()->with('success', 'State updated successfully');
     }
 
     public function showStates()
@@ -136,7 +193,7 @@ class SettingsController extends Controller
         ]);
 
         // Redirect back with success message
-        return redirect()->back()->with('success', 'City added successfully.');
+        return redirect()->back()->withSuccessMessage('City added successfully!');
     }
 
     public function showAllCities()
