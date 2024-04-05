@@ -10,7 +10,7 @@
             <li><a href="#">worldwide</a></li>
         </ul>
         <h2 class="section-title fs-48 effect animated wow fadeInUp" data-wow-offset="50" data-wow-delay=".20s">
-            SpeedyPost Logistics <br />
+            Rapidroute <br />
             <span class="theme-clr"> courier </span> &
             <span class="theme-clr"> delivery </span> services
         </h2>
@@ -61,18 +61,16 @@
                         About Us
                     </h2>
                     <p class="fs-16 wow fadeInUp" data-wow-offset="50" data-wow-delay=".25s">
-                        Lorem ipsum dolor sit amet, consectetuer adipiscing
-                        elit, sed diam nonummy nibh euismod tincidunt ut laoreet
-                        dolore magna aliquam erat volutpat. Ut wisi enim ad
-                        minim veniam, quis nostrud exerci tation ullamcorper
-                        suscipit lobortis nisl ut aliquip.
+                        At Rapidroute, we're dedicated to seamlessly connecting businesses and individuals with reliable courier and delivery services.
+                        With our efficient logistics solutions and commitment to punctuality, we ensure your packages reach their destination swiftly and securely every time.
                     </p>
                     <ul class="feature">
                         <li>
                             <img alt="" src="build/assets/images/icons/icon-2.png" class="wow fadeInUp" data-wow-offset="50" data-wow-delay=".20s" />
                             <div class="feature-content wow rotateInDownRight" data-wow-offset="50" data-wow-delay=".30s">
                                 <h2 class="title-1">Fast delivery</h2>
-                                <p>Duis autem vel eum iriure dolor</p>
+                                <p>At Rapidroute, we guarantee swift delivery services tailored to meet your urgent needs, ensuring your packages
+                                    reach their destination promptly and reliably.</p>
                             </div>
                         </li>
                         <li>
@@ -80,7 +78,8 @@
                             <div class="feature-content wow rotateInDownRight" data-wow-offset="50" data-wow-delay=".30s">
                                 <h2 class="title-1">secured service</h2>
                                 <p>
-                                    Duis autem vel eum iriure dolor in hendrerit
+                                    With Rapidroute, rest assured your shipments are handled with utmost care and security,
+                                    providing peace of mind throughout the delivery process.
                                 </p>
                             </div>
                         </li>
@@ -88,7 +87,8 @@
                             <img alt="" src="build/assets/images/icons/icon-4.png" class="wow fadeInUp" data-wow-offset="50" data-wow-delay=".20s" />
                             <div class="feature-content wow rotateInDownRight" data-wow-offset="50" data-wow-delay=".30s">
                                 <h2 class="title-1">worldwide shipping</h2>
-                                <p>Eum iriure dolor in hendrerit in vulputa</p>
+                                <p>Rapidroute offers seamless worldwide shipping solutions,
+                                    connecting businesses and individuals across the globe with efficient and reliable delivery services.</p>
                             </div>
                         </li>
                     </ul>
@@ -119,8 +119,9 @@
                     calculate your cost
                 </h2>
                 <p class="fs-16 wow fadeInUp" data-wow-offset="50" data-wow-delay=".25s">
-                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit
-                    nonummy nibh euismod tincidunt ut laoreet.
+
+                    To calculate your shipping costs, please provide details such as the origin and destination addresses, package dimensions, weight, and any special requirements.
+                    Our system will then generate a precise quote tailored to your specific needs.
                 </p>
                 <div class="calculate-form">
                     <form class="row">
@@ -220,8 +221,7 @@
                 <div class="steps-content wow fadeInLeft" data-wow-offset="50" data-wow-delay=".25s">
                     <h2 class="title-3">Order</h2>
                     <p class="gray-clr">
-                        Duis autem vel eum iriur <br />
-                        hendrerit in vulputate
+                        Submit your request effortlessly.
                     </p>
                 </div>
             </div>
@@ -232,8 +232,7 @@
                 <div class="steps-content wow fadeInLeft" data-wow-offset="50" data-wow-delay=".25s">
                     <h2 class="title-3">Wait</h2>
                     <p class="gray-clr">
-                        Duis autem vel eum iriur <br />
-                        hendrerit in vulputate
+                        Stay tuned for updates.
                     </p>
                 </div>
             </div>
@@ -244,8 +243,7 @@
                 <div class="steps-content wow fadeInLeft" data-wow-offset="50" data-wow-delay=".25s">
                     <h2 class="title-3">Deliver</h2>
                     <p class="gray-clr">
-                        Duis autem vel eum iriur <br />
-                        hendrerit in vulputate
+                        Receive your package promptly.
                     </p>
                 </div>
             </div>
@@ -256,6 +254,7 @@
     </div>
 </section>
 <!-- /.Steps -->
+
 
 <!-- Product Delivery -->
 <section class="prod-delivery pad-120">
@@ -270,13 +269,9 @@
                         product delivery
                     </h2>
                     <p class="fs-16 wow fadeInUp" data-wow-offset="50" data-wow-delay=".25s">
-                        Lorem ipsum dolor sit amet, consectetuer adipiscing
-                        elit, sed diam <br />
-                        nonummy nibh euismod tincidunt ut laoreet dolore magna
-                        aliquam <br />
-                        erat volutpat. Ut wisi enim ad minim veniam, quis
-                        nostrud exerci <br />
-                        tation ullamcorper suscipit lobortis nisl ut aliquip.
+                        For the quickest product delivery, trust Rapidroute's efficient logistics solutions. <br />
+                        Our commitment to punctuality ensures your items reach you <br /> swiftly,
+                        providing a seamless shopping experience from order <br /> to doorstep.
                     </p>
                     <div class="pb-120 hidden-xs"></div>
                 </div>
@@ -515,18 +510,24 @@
                 </div>
                 <ul class="contact-detail title-2">
                     <li class="wow slideInUp" data-wow-offset="50" data-wow-delay=".25s">
-                        <span>usa numbers:</span>
+                        <span>Whatsapp Number:</span>
+                        <p class="gray-clr">
+                            +17377073368 <br />
+                        </p>
+                    </li>
+                    <li class="wow slideInUp" data-wow-offset="50" data-wow-delay=".25s">
+                        <span>Direct call Number:</span>
                         <p class="gray-clr">
                             +17377073339 <br />
                         </p>
                     </li>
-                    <!-- <li class="wow slideInUp" data-wow-offset="50" data-wow-delay=".30s">
+                    <li class="wow slideInUp" data-wow-offset="50" data-wow-delay=".30s">
                         <span>Email address:</span>
                         <p class="gray-clr">
-                            support@go.com <br />
-                            info@go.com
+                            info@rapidrouteservices.com <br />
+                            support@rapidrouteservices.com
                         </p>
-                    </li> -->
+                    </li>
                 </ul>
             </div>
         </div>

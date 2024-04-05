@@ -27,8 +27,12 @@ Route::middleware([
 
 Route::middleware(['auth'])->group(function () {
 
-    Route::get('/email/verify', [EmailVerificationPromptController::class, '__invoke'])
-        ->name('verification.notice');
+    // Route::get('/email/verify', [EmailVerificationPromptController::class, '__invoke'])
+    //     ->name('verification.notice');
+
+    Route::get('/email/verify', function () {
+        return view('auth.verify-email');
+    })->middleware('auth')->name('verification.notice');
 
     Route::get('/email/verify/{id}/{hash}', [VerifyEmailController::class, '__invoke'])
         ->middleware(['signed', 'throttle:6,1'])
@@ -69,7 +73,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Route for updating the country
     Route::put('/countries/{id}', [SettingsController::class, 'updateCountry'])->name('countries.update');
-    Route::post('/countries/{id}/delete', 'CountriesController@delete')->name('countries.delete');
+    // Route::post('/countries/{id}/delete', 'CountriesController@delete')->name('countries.delete');
 
     Route::get('/add-state', [SettingsController::class, 'addStateForm'])->name('state.create');
     Route::post('/store', [SettingsController::class, 'addState'])->name('add-state');

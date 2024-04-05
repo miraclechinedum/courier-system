@@ -8,20 +8,20 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="card login-page border-0" style="z-index: 1">
-                                    <div class="card-title text-center">
-                                        <a class="logo" href="index.php">
-                                            <img src="assets/uploads/1648521991_logo.png" alt="SpeedyPost Logistics" width="190" height="45">
-
-                                        </a>
-                                    </div>
                                     <div><br></div>
+
                                     @if(session('status'))
                                     <div class="alert alert-info">
                                         {{ session('status') }}
                                     </div>
                                     @endif
+
+                                    <div class="alert alert-info">
+                                        Test message: This is a hardcoded message for testing purposes.
+                                    </div>
+
                                     <div class="card-body p-0">
-                                        <h4 class="card-title text-center">Welcome to SpeedyPost Logistics</h4>
+                                        <h4 class="card-title text-center">Welcome to Rapidroute</h4>
                                         <p class="text-center">Log in to your account and start your adventure.</p>
 
                                         <div id="msgholder2">
@@ -99,11 +99,12 @@
                     </div> <!-- end about detail -->
                 </div> <!-- end col -->
 
-                <div class="col-lg-7 offset-lg-5 padding-less img order-1" style="background-image:url('build/assets/images/user/01.jpg')" data-jarallax="{&quot;speed&quot;: 0.5}"></div><!-- end col -->
+                <div class="col-lg-7 offset-lg-5 padding-less img order-1 d-flex align-items-center justify-content-center" style="background: #242121;" data-jarallax="{&quot;speed&quot;: 0.5}">
+                    <img src="{{ asset('build/assets/images/background/van.png') }}" alt="auth van" style="max-width: 80%; height: auto;" />
+                </div><!-- end col -->
+
             </div>
-            <!--end row-->
-        </div>
-        <!--end container fluid-->
+            <!--end container fluid-->
     </section>
 
 

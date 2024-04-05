@@ -125,9 +125,10 @@
                     </div> <!-- end about detail -->
                 </div> <!-- end col -->
 
-                <div class="col-lg-7 offset-lg-5 padding-less img order-1" style="background-image:url('build/assets/images/user/02.jpg')" data-jarallax="{&quot;speed&quot;: 0.5}">
-
+                <div class="col-lg-7 offset-lg-5 padding-less img order-1 d-flex align-items-center justify-content-center" style="background: #242121;" data-jarallax="{&quot;speed&quot;: 0.5}">
+                    <img src="{{ asset('build/assets/images/background/van.png') }}" alt="auth van" style="max-width: 80%; height: auto;" />
                 </div><!-- end col -->
+
             </div>
             <!--end row-->
         </div>
