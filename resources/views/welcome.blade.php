@@ -498,7 +498,7 @@
 <!-- /.Pricing & Plans -->
 
 <!-- Contact us -->
-<section class="contact-wrap pad-120">
+<section id="contact-wrap" class="contact-wrap pad-120">
     <span class="bg-text wow fadeInLeft" data-wow-offset="50" data-wow-delay=".20s">
         Contact
     </span>
@@ -514,27 +514,19 @@
                     </p>
                 </div>
                 <ul class="contact-detail title-2">
-                    <li class="wow slideInUp" data-wow-offset="50" data-wow-delay=".20s">
-                        <span>uk numbers:</span>
-                        <p class="gray-clr">
-                            +001-2463-957 <br />
-                            +001-4356-643
-                        </p>
-                    </li>
                     <li class="wow slideInUp" data-wow-offset="50" data-wow-delay=".25s">
                         <span>usa numbers:</span>
                         <p class="gray-clr">
-                            +001-2463-957 <br />
-                            +001-4356-643
+                            +17377073339 <br />
                         </p>
                     </li>
-                    <li class="wow slideInUp" data-wow-offset="50" data-wow-delay=".30s">
+                    <!-- <li class="wow slideInUp" data-wow-offset="50" data-wow-delay=".30s">
                         <span>Email address:</span>
                         <p class="gray-clr">
                             support@go.com <br />
                             info@go.com
                         </p>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
         </div>
