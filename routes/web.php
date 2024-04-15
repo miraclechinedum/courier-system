@@ -11,11 +11,13 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\TrackController;
 
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
+
 
 Route::middleware([
     'auth:sanctum',
@@ -26,9 +28,6 @@ Route::middleware([
 });
 
 Route::middleware(['auth'])->group(function () {
-
-    // Route::get('/email/verify', [EmailVerificationPromptController::class, '__invoke'])
-    //     ->name('verification.notice');
 
     Route::get('/email/verify', function () {
         return view('auth.verify-email');
@@ -56,12 +55,18 @@ Route::middleware(['auth'])->group(function () {
 
     // Route to handle the form submission
     Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
+    Route::get('/bookings/{id}/edit', [BookingController::class, 'edit'])->name('bookings.edit');
+
+    Route::put('/bookings/{id}', [BookingController::class, 'update'])->name('bookings.update');
 
     // Route to view booking history
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
     Route::get('/bookings/{tracking_id}', [BookingController::class, 'track'])->name('bookings.track');
 
     Route::get('/invoices/{booking}', [BookingController::class, 'show'])->name('invoice.show');
+
+    Route::post('/generate-pdf', [BookingController::class, 'generatePDF']);
+    Route::post('/send-email', [BookingController::class, 'sendEmailWithAttachment']);
 
     // Settings
     Route::get('/add-country', [SettingsController::class, 'addCountryForm'])->name('add-country');
@@ -92,8 +97,22 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/save-city', [SettingsController::class, 'saveCity'])->name('saveCity');
     Route::get('/cities', [SettingsController::class, 'showAllCities'])->name('cities.index');
 
+    Route::get('/profile', [SettingsController::class, 'showProfile'])->name('profile');
+    Route::get('/edit-profile', [SettingsController::class, 'editProfile'])->name('edit-profile');
+
+    Route::post('/update-profile', [SettingsController::class, 'updateProfile'])->name('updateProfile');
+
+
     Route::get('/add-recipient', [UserController::class, 'showAddRecipientForm'])->name('add-recipient-form');
     Route::post('/add-recipient', [UserController::class, 'store'])->name('store-recipient');
 
     Route::get('/recipients', [UserController::class, 'showRecipients'])->name('recipients');
+
+    Route::get('/recipient/{id}/edit', [UserController::class, 'editRecipient'])->name('edit-recipient');
+    Route::post('/recipient/{id}/update', [UserController::class, 'updateRecipient'])->name('update-recipient');
 });
+
+Route::get('/track', [TrackController::class, 'index'])->name('track.index');
+Route::post('/track', [TrackController::class, 'track'])->name('track.track');
+
+Route::get('/error', [TrackController::class, 'showErrorPage'])->name('error-page');

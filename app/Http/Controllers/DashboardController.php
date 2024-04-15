@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\UserAddress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -38,9 +39,34 @@ class DashboardController extends Controller
             $totalRecipients = 0;
         }
 
-        // Retrieve the count of users with role_id = 2
+        // Retrieve the count of users with role_id = 2 (RECIPIENT)
         $totalCustomers = User::where('role_id', 2)->count();
 
-        return view('dashboard', compact('totalOrders', 'totalCustomers', 'bookings', 'totalRecipients'));
+        $totalReceivers = User::where('role_id', 2)->count();
+
+        // Retrieve the count of bookings with different statuses
+        $totalPendingBookings = Booking::where('status', 'Pending')->count();
+        $totalProcessingBookings = Booking::where('status', 'Processing')->count();
+        $totalInTransitBookings = Booking::where('status', 'In Transit')->count();
+        $totalArrivedBookings = Booking::where('status', 'Arrived')->count();
+        $totalCancelledBookings = Booking::where('status', 'Cancelled')->count();
+
+        $totalRevenue = Booking::sum('amount');
+
+        // Total users on the system
+        $totalUsers = User::where('id', '!=', 1)->count();
+
+        // Total number of senders (role_id 2) and receivers (role_id 3) for each week
+        $weeklySenders = User::where('role_id', 2)
+            ->groupBy(DB::raw('YEAR(created_at)'), DB::raw('WEEK(created_at)'))
+            ->selectRaw('YEAR(created_at) as year, WEEK(created_at) as week, COUNT(*) as count')
+            ->get();
+
+        $weeklyReceivers = User::where('role_id', 3)
+            ->groupBy(DB::raw('YEAR(created_at)'), DB::raw('WEEK(created_at)'))
+            ->selectRaw('YEAR(created_at) as year, WEEK(created_at) as week, COUNT(*) as count')
+            ->get();
+
+        return view('dashboard', compact('totalUsers', 'weeklySenders', 'weeklyReceivers', 'totalOrders', 'totalCustomers',  'totalRevenue', 'totalReceivers', 'bookings', 'totalRecipients', 'totalPendingBookings', 'totalProcessingBookings', 'totalInTransitBookings', 'totalArrivedBookings', 'totalCancelledBookings'));
     }
 }

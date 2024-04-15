@@ -6,7 +6,7 @@
 <div class="page-content">
     <!--start breadcrumb-->
     <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-        <div class="breadcrumb-title pe-3">Bookings</div>
+        <div class="breadcrumb-title pe-3">Parcels</div>
         <div class="ps-3">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0 p-0 align-items-center">
@@ -16,7 +16,7 @@
                         </a>
                     </li>
                     <li class="breadcrumb-item active" aria-current="page">
-                        my bookings
+                        registered parcels
                     </li>
                 </ol>
             </nav>
@@ -24,7 +24,7 @@
         <div class="ms-auto">
             <div class="btn-group">
                 <a href="{{ route('bookings.create') }}" class="btn btn-outline-primary">
-                    New Booking
+                    Register New Parcel
                 </a>
             </div>
         </div>
@@ -34,7 +34,7 @@
     <div class="card mt-4">
         <div class="card-body">
             @if($bookings->isEmpty())
-            <p>No bookings found.</p>
+            <p>No parcels registered yet.</p>
             @else
             <div class="table-responsive">
                 <table id="example2" class="table table-striped table-bordered">
@@ -72,6 +72,11 @@
                                 <a href="{{ route('invoice.show', $booking->id) }}" style="font-size: 20px;">
                                     <i class="lni lni-eye"></i>
                                 </a>
+
+                                <a href="{{ route('bookings.edit', ['id' => $booking->id]) }}" style="font-size: 20px;">
+                                    <i class="lni lni-pencil text-danger"></i>
+                                </a>
+
                             </td>
                         </tr>
                         @endforeach

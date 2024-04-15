@@ -16,9 +16,9 @@
                                     </div>
                                     @endif
 
-                                    <div class="alert alert-info">
+                                    <!-- <div class="alert alert-info">
                                         Test message: This is a hardcoded message for testing purposes.
-                                    </div>
+                                    </div> -->
 
                                     <div class="card-body p-0">
                                         <h4 class="card-title text-center">Welcome to Rapidroute</h4>
@@ -59,7 +59,7 @@
                                                 </div>
                                                 <!--end col-->
 
-                                                <div class="col-lg-12">
+                                                <!-- <div class="col-lg-12">
                                                     <div class="d-flex justify-content-between">
                                                         <div class="mb-3">
                                                             <div class="form-check">
@@ -69,7 +69,7 @@
                                                         </div>
                                                         <p class="forgot-pass mb-0"><a href="forgot-password.php" class="text-dark fw-bold">Forgot your password ?</a></p>
                                                     </div>
-                                                </div>
+                                                </div> -->
                                                 <!--end col-->
 
                                                 <div class="col-lg-12 mb-0">

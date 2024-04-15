@@ -5,7 +5,7 @@
             <img src="{{ asset('build/assets/images/logo-icon-2.png') }}" class="logo-icon" alt="logo icon" />
         </div>
         <div>
-            <h4 class="logo-text">SpeedyLogistics</h4>
+            <h4 class="logo-text">Rapidroute</h4>
         </div>
     </div>
     <!--navigation-->
@@ -23,12 +23,12 @@
                 <div class="parent-icon">
                     <ion-icon name="bag-handle-outline"></ion-icon>
                 </div>
-                <div class="menu-title">Booking</div>
+                <div class="menu-title">Parcels</div>
             </a>
             <ul>
                 <li>
                     <a href="{{ route('bookings.index') }}">
-                        <ion-icon name="ellipse-outline"></ion-icon>My Bookings
+                        <ion-icon name="ellipse-outline"></ion-icon>Registered parcels
                     </a>
                 </li>
             </ul>
@@ -70,16 +70,6 @@
                 <div class="menu-title">My Recipients</div>
             </a>
         </li>
-        @if(auth()->id() == 1)
-        <li>
-            <a href="javascript:;">
-                <div class="parent-icon">
-                    <i class="lni lni-calculator"></i>
-                </div>
-                <div class="menu-title">Rate Calculator</div>
-            </a>
-        </li>
-        @endif
 
 
         <li class="menu-label">Mics</li>

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Country;
 use App\Models\State;
 use App\Models\City;
+use App\Models\UserAddress;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -145,7 +146,7 @@ class SettingsController extends Controller
         $state->save();
 
         // Redirect back to the previous page or to a different page
-        return redirect()->back()->with('success', 'State updated successfully');
+        return redirect()->back()->withSuccessMessage('State updated successfully!');
     }
 
     public function showStates()
@@ -208,5 +209,65 @@ class SettingsController extends Controller
         $stateId = $request->input('state_id');
         $cities = City::where('state_id', $stateId)->get();
         return response()->json($cities);
+    }
+
+    public function showProfile()
+    {
+        // Get the logged-in user's ID
+        $userId = auth()->user()->id;
+
+        // Fetch the user's address from the user_address table
+        $userAddress = UserAddress::where('user_id', $userId)->first();
+
+        // Pass the user's address to the profile view
+        return view('profile', ['userAddress' => $userAddress]);
+    }
+
+    public function editProfile()
+    {
+        $user = auth()->user();
+
+        $userId = auth()->user()->id;
+
+        // Fetch the user's address details based on the user ID
+        $userAddress = UserAddress::where('user_id', $userId)->first();
+
+        $countries = Country::all();
+        $states = State::all();
+        $cities = City::all();
+
+        // Pass the user data to the view
+        return view('edit-profile', compact('user', 'countries', 'states', 'cities', 'userAddress'));
+    }
+
+    public function updateProfile(Request $request)
+    {
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . auth()->id(),
+            'phone_number' => 'required|string|max:20',
+            'country_id' => 'required|exists:countries,id',
+            'state_id' => 'required|exists:states,id',
+            'city_id' => 'required|exists:cities,id',
+            'zip_code' => 'required|string|max:20',
+            'address' => 'required|string|max:255',
+        ]);
+
+        // Update user details
+        $user = auth()->user();
+        $user->update($validatedData);
+
+        // Update user address details
+        $user->address->update([
+            'country_id' => $request->input('country_id'),
+            'state_id' => $request->input('state_id'),
+            'city_id' => $request->input('city_id'),
+            'zip_code' => $request->input('zip_code'),
+            'address' => $request->input('address'),
+        ]);
+
+        // Redirect back with success message if no validation errors
+        return redirect()->route('profile')->withSuccessMessage('Profile updated successfully!');
     }
 }

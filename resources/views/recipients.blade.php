@@ -47,7 +47,7 @@
                             <th>State</th>
                             <th>City</th>
                             <th>Address</th>
-                            <th>Actions</th>
+                            <th>&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -62,12 +62,12 @@
                             <td>{{ $recipient->city->city_name }}</td>
                             <td>{{ $recipient->address }}</td>
                             <td>
-                                <a>
+                                <a href="{{ route('edit-recipient', ['id' => $recipient->id]) }}" style="font-size: 18px">
                                     <i class="lni lni-pencil"></i>
                                 </a>
-                                <a>
+                                <!-- <a>
                                     <i class="lni lni-trash"></i>
-                                </a>
+                                </a> -->
                             </td>
                         </tr>
                         @endforeach

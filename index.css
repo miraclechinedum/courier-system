@@ -1,0 +1,114 @@
+* {
+    margin: 0;
+}
+
+.row {
+    margin: 0;
+}
+
+.left {
+    border: 1px solid black;
+    padding-bottom: 30px !important;
+}
+
+.right {
+    border: 1px solid black;
+}
+
+.company-info {
+    border: 1px solid black;
+    font-weight: bold;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 25px;
+}
+
+.company-info .site-details h5 {
+    margin: 0;
+    font-weight: bolder;
+    color: #b31217;
+}
+
+.company-info .site-info span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.company-info .site-info span h6 {
+    margin: 0;
+    font-weight: bold;
+}
+
+.barcode-con {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+}
+
+.barcode {
+    text-align: center;
+}
+
+table {
+    margin: 0 !important;
+}
+
+.customers-details .sender .title {
+    background-color: #09183A;
+    padding: 10px;
+}
+
+.customers-details .sender .title h5 {
+    color: #fff;
+    font-size: 17px;
+}
+
+.customers-details .sender table td {
+    padding: 0;
+}
+
+.right .logo {
+    height: 156px;
+    border: 1px solid black;
+}
+
+.right .logo img {
+    height: 100%;
+    width: 100%;
+}
+
+.parcel-details-con, .parcel-details-con .details table {
+    background-color: #f0f0f0;
+}
+
+.parcel-details-con .details .title {
+    color: #fff;
+    padding: 15px 5px;
+    text-transform: uppercase;
+    background-color: #09183A;
+}
+
+.parcel-details-con .details .title h4 {
+    font-size: 18px;
+}
+
+.parcel-details-con .details .top-table th, 
+.parcel-details-con .details .top-table td {
+    padding: 30px;
+    text-align: center;
+    border: 1px solid black;
+    background-color: #f0f0f0;
+}
+
+.parcel-details-con .details table td {
+    border: 1px solid black;
+    background-color: #f0f0f0;
+}
+
+
+.package table {
+    border-color: #09183A;
+}

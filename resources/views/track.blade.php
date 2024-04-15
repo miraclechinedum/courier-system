@@ -8,8 +8,8 @@
         <div class="row">
             <div class="col-sm-8 pull-left">
                 <div class="title-wrap">
-                    <h2 class="section-title no-margin"> product tracking </h2>
-                    <p class="fs-16 no-margin"> Track your product & see the current condition </p>
+                    <h2 class="section-title no-margin"> parcel tracking </h2>
+                    <p class="fs-16 no-margin"> Track your parcel & see the current status </p>
                 </div>
             </div>
             <div class="col-sm-4">
@@ -28,17 +28,18 @@
     <div class="theme-container container ">
         <div class="row pad-10">
             <div class="col-md-8 col-md-offset-2 tracking-form wow fadeInUp" data-wow-offset="50" data-wow-delay=".30s">
-                <h2 class="title-1"> track your product </h2> <span class="font2-light fs-12">Now you can track your product easily</span>
+                <h2 class="title-1"> track your parcel </h2> <span class="font2-light fs-12">Now you can track your parcel easily</span>
                 <div class="row">
-                    <form class="">
+                    <form method="POST" action="{{ route('track.track') }}">
+                        @csrf
                         <div class="col-md-7 col-sm-7">
                             <div class="form-group">
-                                <input type="text" placeholder="Enter your product ID" required="" class="form-control box-shadow">
+                                <input type="text" name="product_id" placeholder="Enter your product ID" required="" class="form-control box-shadow">
                             </div>
                         </div>
                         <div class="col-md-5 col-sm-5">
                             <div class="form-group">
-                                <button class="btn-1">track your product</button>
+                                <button type="submit" class="btn-1">Track Your Product</button>
                             </div>
                         </div>
                     </form>
@@ -46,23 +47,50 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-7 pad-30 wow fadeInLeft" data-wow-offset="50" data-wow-delay=".30s">
-                <img alt="" src="../../public/build/assets/images/block/product-1.jpg" />
-            </div>
-            <div class="col-md-5 pad-30 wow fadeInRight" data-wow-offset="50" data-wow-delay=".30s">
+            <div class="col-md-5 pad-30 wow fadeInLeft" data-wow-offset="50" data-wow-delay=".30s">
                 <div class="prod-info white-clr">
                     <ul>
-                        <li> <span class="title-2">Product Name:</span> <span class="fs-16">iPhone 6 Boxed</span> </li>
-                        <li> <span class="title-2">Product id:</span> <span class="fs-16">9034215</span> </li>
-                        <li> <span class="title-2">order date:</span> <span class="fs-16">21st Feb, 2016</span> </li>
-                        <li> <span class="title-2">order status:</span> <span class="fs-16 theme-clr">On Process</span> </li>
-                        <li> <span class="title-2">weight (kg):</span> <span class="fs-16">0.85 KG</span> </li>
-                        <li> <span class="title-2">order type:</span> <span class="fs-16">Basic ($50)</span> </li>
+                        <li> <span class="title-2">Tracking ID:</span> <span class="fs-16">{{ $booking->tracking_id }}</span> </li>
+                        <li> <span class="title-2">parcel type:</span> <span class="fs-16">{{ $booking->packaging_type }}</span> </li>
+                        <li> <span class="title-2">Delivery In:</span> <span class="fs-16">{{ $booking->service_mode }}</span> </li>
+                        <li> <span class="title-2">parcel status:</span> <span class="fs-16 theme-clr">{{ $booking->status }}</span> </li>
+                        <li> <span class="title-2">date registered:</span> <span class="fs-16">{{ $booking->created_at->format('jS M, Y') }}</span> </li>
                     </ul>
                 </div>
             </div>
+            <div class="col-md-7 pad-30 wow fadeInRight" data-wow-offset="50" data-wow-delay=".30s">
+                <div class="row" style="color: #000;">
+                    <div class="col-md-12">
+                        <h3 style="text-decoration: underline;">Package Information</h3>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Package</th>
+                                    <th>Quantity</th>
+                                    <th>Weight</th>
+                                    <th>Length</th>
+                                    <th>Width</th>
+                                    <th>Height</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($booking->packages as $index => $package)
+                                <tr>
+                                    <td>{{ $index + 1}}</td>
+                                    <td>{{ $package->package_description }}</td>
+                                    <td>{{ number_format($package->weight, 0) }} KG</td>
+                                    <td>{{ number_format($package->length) }} CM</td>
+                                    <td>{{ number_format($package->width) }} CM</td>
+                                    <td>{{ number_format($package->height) }} CM</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="progress-wrap">
+        <!-- <div class="progress-wrap">
             <div class="progress-status">
                 <span class="border-left"></span>
                 <span class="border-right"></span>
@@ -90,7 +118,33 @@
                     <h2 class="title-1 no-margin">dhaka</h2>
                 </div>
             </div>
-        </div>
+        </div> -->
+
+        <!-- <div class="row">
+            <div class="col-md-12">
+                <h3>Package Information</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Package Description</th>
+                            <th>Quantity</th>
+                            <th>Weight</th>
+                            <th>Dimensions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($booking->packages as $package)
+                        <tr>
+                            <td>{{ $package->package_description }}</td>
+                            <td>{{ $package->quantity }}</td>
+                            <td>{{ $package->weight }} KG</td>
+                            <td>{{ $package->length }} x {{ $package->width }} x {{ $package->height }} (L x W x H)</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div> -->
     </div>
 </section>
 <!-- /.Tracking -->

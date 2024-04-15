@@ -20,12 +20,14 @@ class Booking extends Model
         'courier_company',
         'packaging_type',
         'payment_method',
+        'amount',
         'package_description',
         'quantity',
         'weight',
         'length',
         'width',
         'height',
+        'description',
     ];
 
     public function user()

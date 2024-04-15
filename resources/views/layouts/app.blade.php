@@ -6,6 +6,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+
     <!-- loader-->
     <link href="{{ asset('build/assets/css/pace.min.css') }}" rel="stylesheet" />
     <script src="{{ asset('build/assets/js/pace.min.js') }}"></script>
@@ -39,7 +42,7 @@
     <link href="{{ asset('build/assets/css/semi-dark.css') }}" rel="stylesheet" />
     <link href="{{ asset('build/assets/css/header-colors.css') }}" rel="stylesheet" />
 
-    <title>Courier</title>
+    <title>Rapidroute</title>
 </head>
 
 <body>

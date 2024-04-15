@@ -20,24 +20,23 @@
 <!-- /.Banner -->
 
 <!-- Track Product -->
-<!-- <section>
+<section>
     <div class="theme-container container">
         <div class="row">
             <div class="col-md-8 col-md-offset-2 track-prod clrbg-before wow slideInUp" data-wow-offset="50" data-wow-delay=".20s">
-                <h2 class="title-1">track your product</h2>
-                <span class="font2-light fs-12">Now you can track your product easily</span>
+                <h2 class="title-1">track your parcel</h2>
+                <span class="font2-light fs-12">Now you can track your parcel easily</span>
                 <div class="row">
-                    <form class="">
+                    <form method="POST" action="{{ route('track.track') }}">
+                        @csrf
                         <div class="col-md-7 col-sm-7">
                             <div class="form-group">
-                                <input type="text" placeholder="Enter your product ID" required="" class="form-control box-shadow" />
+                                <input type="text" name="product_id" placeholder="Enter your product ID" required="" class="form-control box-shadow">
                             </div>
                         </div>
                         <div class="col-md-5 col-sm-5">
                             <div class="form-group">
-                                <button class="btn-1">
-                                    track your product
-                                </button>
+                                <button type="submit" class="btn-1">Track Your Product</button>
                             </div>
                         </div>
                     </form>
@@ -45,11 +44,11 @@
             </div>
         </div>
     </div>
-</section> -->
+</section>
 <!-- /.Track Product -->
 
 <!-- About Us -->
-<section class="pad-80 about-wrap clrbg-before">
+<section id="about-wrap" class="pad-80 about-wrap clrbg-before">
     <span class="bg-text wow fadeInUp" data-wow-offset="50" data-wow-delay=".20s">
         About
     </span>
@@ -104,7 +103,7 @@
 <!-- /.About Us -->
 
 <!-- Calculate Your Cost -->
-<section class="calculate pt-100">
+<!-- <section class="calculate pt-100">
     <div class="theme-container container">
         <span class="bg-text right wow fadeInUp" data-wow-offset="50" data-wow-delay=".20s">
             calculate
@@ -207,7 +206,7 @@
             </div>
         </div>
     </div>
-</section>
+</section> -->
 <!-- /.Calculate Your Cost -->
 
 <!-- Steps -->
@@ -505,7 +504,7 @@
                         contact us
                     </h2>
                     <p class="wow fadeInLeft" data-wow-offset="50" data-wow-delay=".20s">
-                        Get in touch with us easiky
+                        Get in touch with us easily
                     </p>
                 </div>
                 <ul class="contact-detail title-2">

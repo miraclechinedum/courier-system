@@ -41,8 +41,8 @@
                          <span class="icon-bar"></span>
                      </button>
                      <a class="navbar-logo" href="/">
-                         <!-- <img src="build/assets/images/logo/logo-black.png" alt="logo" /> -->
-                         LOGO HERE
+                         <!-- <img src="{{ asset('./build/assets/images/logo/rapidroute-logo.png') }}" /> -->
+                         RAPIDROUTE
                      </a>
                  </div>
                  <div class="col-md-10 col-sm-10 fs-12">
@@ -55,7 +55,7 @@
                                  <a href="#about-wrap">about</a>
                              </li>
                              <!-- <li>
-                                 <a href="tracking.html">
+                                 <a href="{{ route('track.index') }}">
                                      tracking
                                  </a>
                              </li> -->

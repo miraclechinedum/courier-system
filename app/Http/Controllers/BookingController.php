@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Dompdf\Dompdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Country;
@@ -11,6 +13,8 @@ use App\Models\UserAddress;
 use App\Models\Booking;
 use App\Models\Package;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 
 class BookingController extends Controller
@@ -36,7 +40,6 @@ class BookingController extends Controller
         return response()->json($cities);
     }
 
-
     public function create()
     {
         // Fetch all countries
@@ -52,94 +55,33 @@ class BookingController extends Controller
             ->with('userAddresses')
             ->get();
 
+        // Fetch all senders (users with role_id 2) along with their user addresses
+        $senders = User::where('role_id', 2)
+            ->with('userAddresses')
+            ->get();
+
         // Pass the variables to the view
-        return view('submit-booking', compact('countries', 'userAddresses', 'recipients'));
+        return view('submit-booking', compact('countries', 'userAddresses', 'recipients', 'senders'));
     }
 
 
-
-    // public function store(Request $request)
-    // {
-    //     // Validate the request data
-    //     $validatedData = $request->validate([
-    //         'pickup_location' => 'required|string',
-    //         'delivery_location' => 'required|string',
-    //         'package_details' => 'required|string',
-    //     ]);
-
-    //     // Generate tracking ID
-    //     $trackingId = strtoupper('LP-' . rand(10000, 99999) . '-' . rand(100, 999) . '-' . rand(100, 999));
-
-    //     // Create a new booking record
-    //     $booking = new Booking();
-    //     $booking->user_id = auth()->id();
-    //     $booking->pickup_location = $validatedData['pickup_location'];
-    //     $booking->delivery_location = $validatedData['delivery_location'];
-    //     $booking->package_details = $validatedData['package_details'];
-    //     $booking->status = 'pending';
-    //     $booking->tracking_id = $trackingId; // Assign generated tracking ID
-    //     $booking->save();
-
-    //     return redirect()->route('bookings.index')->with('success', 'Booking created successfully. Tracking ID: ' . $trackingId);
-    // }
-
-    // public function store(Request $request)
-    // {
-    //     // dd("booking submit", $request->all());
-    //     // Validate the form data
-    //     $validator = Validator::make($request->all(), [
-    //         // 'prefix' => 'required',
-    //         // 'tracking' => 'required',
-    //         'service_mode' => 'required',
-    //         'courier_company' => 'required',
-    //         'packaging_type' => 'required',
-    //         'payment_method' => 'required',
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         return redirect()->back()->withErrors($validator)->withInput();
-    //     }
-
-    //     // Concatenate prefix and tracking number
-    //     $bookingCode = $validator['prefix'] . '-' . $validator['tracking'];
-
-    //     // Create a new Booking instance
-    //     $booking = new Booking();
-
-    //     // Set the attributes
-    //     $booking->user_id = $validator['user_id'];
-    //     $booking->tracking_id = $bookingCode;
-    //     $booking->service_mode = $validator['service_mode'];
-    //     $booking->courier_company = $validator['courier_company'];
-    //     $booking->packaging_type = $validator['packaging_type'];
-    //     $booking->payment_method = $validator['payment_method'];
-    //     // $booking->sender_id = $request->input('sender_id');
-    //     // $booking->recipient_address_id = $request->input('recipient_address_id');
-
-    //     // Save the booking to the database
-    //     $booking->save();
-
-    //     // Redirect back or wherever you want after successful submission
-    //     // return redirect()->back()->with('success', 'Booking submitted successfully!');
-    //     return redirect()->route('bookings.index')->with('success', 'Booking created successfully.');
-    // }
-
     public function store(Request $request)
     {
-        // Validate the form data
         // Validate the form data
         $validator = Validator::make($request->all(), [
             'service_mode' => 'required',
             'courier_company' => 'required',
             'packaging_type' => 'required',
             'payment_method' => 'required',
+            'amount' => 'required',
+            'description' => 'required',
             'sender_customer_address' => 'required',
-            'package_description' => 'required|array', // Update field name
-            'quantity' => 'required|array', // Update field name
-            'weight' => 'required|array', // Update field name
-            'length' => 'required|array', // Update field name
-            'width' => 'required|array', // Update field name
-            'height' => 'required|array', // Update field name
+            'package_description' => 'required|array',
+            'quantity' => 'required|array',
+            'weight' => 'required|array',
+            'length' => 'required|array',
+            'width' => 'required|array',
+            'height' => 'required|array',
         ]);
 
         if ($validator->fails()) {
@@ -148,18 +90,22 @@ class BookingController extends Controller
 
         // Concatenate prefix and tracking number
         $bookingCode = $request->prefix . '-' . $request->tracking;
+        // Parse and format the service_mode date
+        $serviceModeDate = Carbon::createFromFormat('m/d/Y', $request->service_mode)->format('Y-m-d');
 
         // Create a new Booking instance
         $booking = new Booking();
 
         // Set the attributes
-        $booking->user_id = $request->user_id;
+        $booking->user_id = auth()->id();
         $booking->tracking_id = $bookingCode;
-        $booking->service_mode = $request->service_mode;
+        $booking->service_mode = $serviceModeDate;
         $booking->courier_company = $request->courier_company;
         $booking->packaging_type = $request->packaging_type;
         $booking->payment_method = $request->payment_method;
-        $booking->status = "pending";
+        $booking->amount = $request->amount;
+        $booking->status = "Pending";
+        $booking->description = $request->description;
 
         // Set package details
         $booking->sender_customer_address = $request->sender_customer_address;
@@ -169,7 +115,6 @@ class BookingController extends Controller
         // Save the booking to the database
         $booking->save();
 
-        // Save each package associated with the booking
         // Save each package associated with the booking
         for ($i = 0; $i < count($request->package_description); $i++) { // Update field name
             $package = new Package();
@@ -184,7 +129,7 @@ class BookingController extends Controller
         }
 
 
-        return redirect()->route('bookings.index')->with('success', 'Booking created successfully.');
+        return redirect()->route('bookings.index')->withSuccessMessage('Booking created successfully.');
     }
 
     public function index()
@@ -212,14 +157,147 @@ class BookingController extends Controller
         return view('invoice', compact('booking'));
     }
 
-    public function track($trackingId)
+    public function edit($id)
     {
-        $booking = Booking::where('tracking_id', $trackingId)->first();
+        // Fetch the booking with the given ID from the database
+        $booking = Booking::findOrFail($id);
 
-        if (!$booking) {
-            return redirect()->route('bookings.index')->with('error', 'Tracking ID not found.');
+        // Fetch the associated packages for the booking
+        $packages = $booking->packages;
+
+        // Fetch user addresses for the logged-in user
+        $userAddresses = auth()->user()->userAddresses;
+
+        // Fetch recipients (users with role_id 3) along with their user addresses
+        $recipients = User::where('role_id', 3)
+            ->with('userAddresses')
+            ->get();
+
+        // Pass the booking, packages, and user addresses data to the view
+        return view('edit-booking', compact('booking', 'packages', 'recipients', 'userAddresses'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        // Validate the form data
+        $validator = Validator::make($request->all(), [
+            'service_mode' => 'required',
+            'courier_company' => 'required',
+            'packaging_type' => 'required',
+            'payment_method' => 'required',
+            'amount' => 'required',
+            'status' => 'required',
+            'sender_customer_address' => 'required',
+            'recipient_client' => 'required',
+            'recipient_client_address' => 'required',
+            'package_description' => 'required|array',
+            'quantity' => 'required|array',
+            'weight' => 'required|array',
+            'length' => 'required|array',
+            'width' => 'required|array',
+            'height' => 'required|array',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        return view('track', compact('booking'));
+        // Find the booking by ID
+        $booking = Booking::findOrFail($id);
+
+        // Concatenate prefix and tracking number
+        $bookingCode = $request->prefix_hidden . '-' . $request->tracking_hidden;
+
+        // Update booking attributes
+        $booking->service_mode = $request->service_mode;
+        $booking->courier_company = $request->courier_company;
+        $booking->packaging_type = $request->packaging_type;
+        $booking->payment_method = $request->payment_method;
+        $booking->amount = $request->amount;
+        $booking->status = $request->status;
+
+        // Set package details
+        $booking->sender_customer_address = $request->sender_customer_address;
+        $booking->recipient_client = $request->recipient_client;
+        $booking->recipient_client_address = $request->recipient_client_address;
+
+        // Save the updated booking to the database
+        $booking->save();
+
+        // Delete existing packages associated with the booking
+        $booking->packages()->delete();
+
+        // Save each updated package associated with the booking
+        for ($i = 0; $i < count($request->package_description); $i++) {
+            $package = new Package();
+            $package->booking_id = $booking->id;
+            $package->package_description = $request->package_description[$i];
+            $package->quantity = $request->quantity[$i];
+            $package->weight = $request->weight[$i];
+            $package->length = $request->length[$i];
+            $package->width = $request->width[$i];
+            $package->height = $request->height[$i];
+            $package->save();
+        }
+
+        return redirect()->route('bookings.index')->withSuccessMessage('Booking updated successfully.');
+    }
+
+    public function generatePDF(Request $request)
+    {
+        try {
+            $html = $request->input('htmlContent');
+            $dompdf = new Dompdf();
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->render();
+
+            // Check if the directory exists, if not, create it
+            $tempDir = storage_path('app/temp');
+            if (!file_exists($tempDir)) {
+                mkdir($tempDir, 0755, true);
+            }
+
+            $pdfPath = $tempDir . '/receipt.pdf';
+
+            // Save the PDF to a file
+            file_put_contents($pdfPath, $dompdf->output());
+
+            // Check if the file was successfully saved
+            if (file_exists($pdfPath)) {
+                return $pdfPath; // Return the path to the generated PDF
+            } else {
+                Log::error('Failed to save PDF file');
+                return null;
+            }
+        } catch (\Exception $e) {
+            // Log the error for debugging purposes
+            Log::error('PDF generation error: ' . $e->getMessage());
+            return null; // Return null or handle the error accordingly
+        }
+    }
+
+    public function sendEmailWithAttachment(Request $request)
+    {
+        try {
+            $pdfPath = $this->generatePDF($request);
+
+            if ($pdfPath) {
+                Mail::send([], [], function ($message) use ($pdfPath) {
+                    $message->to('miraclechinedum16@gmail.com')
+                        ->subject('Receipt')
+                        ->attach($pdfPath, ['as' => 'receipt.pdf']);
+                });
+
+                return 'Email sent successfully.';
+            } else {
+                // Handle the case when PDF generation fails
+                return response()->json(['error' => 'PDF generation failed.'], 500);
+            }
+        } catch (\Exception $e) {
+            // Log the error for debugging purposes
+            Log::error('Email sending error: ' . $e->getMessage());
+            return response()->json(['error' => 'Email sending failed.'], 500);
+        }
     }
 }
